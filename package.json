@@ -1,0 +1,81 @@
+{
+  "name": "ai-workbench",
+  "version": "1.0.0",
+  "description": "本地程序悬浮台：把常用的本地 AI 工具收在一条悬浮条上",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "dist": "electron-builder --win --x64",
+    "release": "node scripts/release.js"
+  },
+  "devDependencies": {
+    "electron": "^45.2.3",
+    "electron-builder": "^26.18.0"
+  },
+  "build": {
+    "appId": "com.aiworkbench.app",
+    "productName": "AI-Workbench",
+    "electronDist": "node_modules/electron/dist",
+    "asar": false,
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "preload-browser.js",
+      "renderer/**/*",
+      "modules/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "winmgr.py",
+        "to": "winmgr.py"
+      },
+      {
+        "from": "plugins",
+        "to": "plugins"
+      },
+      {
+        "from": "assets/tray.ico",
+        "to": "assets/tray.ico"
+      },
+      {
+        "from": "assets/icons",
+        "to": "assets/icons"
+      },
+      {
+        "from": "server",
+        "to": "server"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "dir",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/tray.ico"
+    }
+  },
+  "author": {
+    "name": "AI Workbench contributors"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/<owner>/ai-workbench"
+  },
+  "keywords": [
+    "electron",
+    "launcher",
+    "tray",
+    "productivity",
+    "windows"
+  ]
+}

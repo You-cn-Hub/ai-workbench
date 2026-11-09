@@ -1,0 +1,545 @@
+:root {
+  --text: #f0eff4;
+  --muted: #9c9ca4;
+  --faint: #7d7d87;
+  --ok: #3fbf8f;
+  --line: rgba(255, 255, 255, 0.09);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+  user-select: none;
+  font: 400 12px/1.4 system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+}
+
+.rail {
+  position: relative;
+  width: 214px;
+  height: 100%;
+  margin: 0;
+  background: rgba(22, 22, 26, 0.95);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 8px 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  cursor: grab;
+}
+
+/* 顶部拖动条 */
+.head {
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2px 0 4px;
+  margin-bottom: 4px;
+}
+.grip {
+  width: 26px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.22);
+  transition: background .15s;
+}
+.head:hover .grip { background: rgba(255, 255, 255, 0.42); }
+
+/* 头部按钮组：置顶 / 设置 / 关闭 */
+.hbtns {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.hbtn {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.3);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: color .15s, background .15s, border-color .15s;
+}
+.hbtn svg { display: block; }
+.hbtn:hover { color: rgba(255, 255, 255, 0.85); background: rgba(255, 255, 255, 0.09); }
+.hbtn.on {
+  color: var(--ok);
+  border-color: rgba(63, 191, 143, 0.35);
+  background: rgba(63, 191, 143, 0.12);
+}
+.hbtn.on:hover { color: #6ee0b4; }
+.hbtn.active {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.12);
+}
+/* 关闭按钮：悬停才变红，平时保持低调 */
+.hbtn.close:hover {
+  color: #fff;
+  background: rgba(224, 75, 74, .82);
+}
+
+/* 设置面板 */
+.settings {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 30px;
+  background: rgba(18, 18, 22, 0.99);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 8px 10px 10px;
+  z-index: 15;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .6);
+}
+.shead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted);
+  padding-bottom: 7px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.sclose {
+  width: 16px;
+  height: 16px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--faint);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.sclose:hover { color: #fff; background: rgba(255, 255, 255, .12); }
+
+.srow {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+.slabel {
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.sbtn {
+  width: 100%;
+  height: 26px;
+  border-radius: 7px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 8px;
+  transition: border-color .15s, background .15s, color .15s;
+}
+.sbtn:hover { border-color: var(--muted); background: rgba(255, 255, 255, .09); }
+.sbtn.recording {
+  border-color: rgba(91, 141, 239, .8);
+  background: rgba(91, 141, 239, .18);
+  color: #b7cdfb;
+}
+.sbtn.unset { color: var(--faint); }
+.shint {
+  margin-top: 8px;
+  font-size: 9.5px;
+  line-height: 1.65;
+  color: var(--faint);
+}
+.shint.err { color: #E24B4A; }
+
+/* 列表 */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 1px;
+}
+.list::-webkit-scrollbar { width: 5px; }
+.list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, .14);
+  border-radius: 3px;
+}
+.list::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, .26); }
+
+/* 空列表提示 */
+.empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--faint);
+  font-size: 11px;
+  text-align: center;
+  line-height: 1.7;
+  padding: 0 12px;
+}
+.empty b {
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background .13s, border-color .13s;
+}
+.item:hover { background: rgba(255, 255, 255, 0.055); }
+.item.active {
+  background: rgba(175, 169, 236, 0.13);
+  border-color: rgba(175, 169, 236, 0.25);
+}
+.item.missing { opacity: .45; }
+
+/* 拖动换位：被拖的那行跟手浮起来，原位留一个空槽 */
+.item.dragging {
+  cursor: grabbing;
+  opacity: .97;
+  pointer-events: none;
+  background: rgba(255, 255, 255, .1);
+  border-color: rgba(255, 255, 255, .14);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, .48);
+  transition: none;
+}
+.dropmark {
+  flex: none;
+  border-radius: 10px;
+  border: 1px dashed rgba(175, 169, 236, .45);
+  background: rgba(175, 169, 236, .1);
+}
+
+.ico {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 7px;
+  object-fit: contain;
+  background: rgba(255, 255, 255, 0.04);
+}
+.ico.ph {
+  display: grid;
+  place-items: center;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .35);
+}
+
+.meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.nm {
+  font-size: 12.5px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.st {
+  font-size: 10px;
+  color: var(--faint);
+  white-space: nowrap;
+}
+
+/* 胶囊开关 */
+.switch {
+  width: 36px;
+  height: 20px;
+  flex: none;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  cursor: pointer;
+  transition: background .18s, border-color .18s;
+}
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #e8e8ec;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .4);
+  transition: transform .18s ease;
+}
+.switch:hover { border-color: rgba(255, 255, 255, 0.28); }
+.switch.on { background: var(--ok); border-color: transparent; }
+.switch.on::after { transform: translateX(16px); background: #fff; }
+.switch.busy { opacity: .5; }
+
+/* 底部状态 */
+.foot {
+  padding-top: 6px;
+  border-top: 1px solid var(--line);
+}
+.tip {
+  font-size: 10px;
+  color: var(--faint);
+  text-align: center;
+  min-height: 13px;
+  line-height: 1.3;
+  word-break: break-all;
+}
+
+body.dragging .rail { border-color: rgba(255, 255, 255, 0.22); }
+body.dragging .grip { background: rgba(255, 255, 255, 0.5); }
+
+/* 右键菜单 */
+.rmenu {
+  position: absolute;
+  min-width: 132px;
+  background: rgba(26, 26, 31, 0.99);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 4px;
+  z-index: 20;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .6);
+  animation: rmenuIn .1s ease-out;
+}
+@keyframes rmenuIn {
+  from { opacity: 0; transform: scale(.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+.rmi {
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  color: var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .1s;
+}
+.rmi:hover { background: rgba(255, 255, 255, .1); }
+.rmi.danger { color: #ff8b8b; }
+.rmi.danger:hover { background: rgba(224, 75, 74, .22); }
+.rmi.disabled {
+  color: var(--faint);
+  cursor: default;
+}
+.rmi.disabled:hover { background: transparent; }
+.rsep {
+  height: 1px;
+  margin: 4px 6px;
+  background: var(--line);
+}
+
+/* 文件浮层：点「N 个文件」才弹出来 */
+.fpanel {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  background: rgba(18, 18, 22, 0.98);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 4px;
+  z-index: 8;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .5);
+  max-height: 220px;
+  overflow-y: auto;
+}
+.fpanel::-webkit-scrollbar { width: 6px; }
+.fpanel::-webkit-scrollbar-thumb { background: rgba(255,255,255,.16); border-radius: 3px; }
+.fphead {
+  padding: 4px 8px 5px;
+  font-size: 10px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 2px;
+}
+.frow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 7px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+.frow:hover { background: rgba(255, 255, 255, .07); }
+.frow .fn {
+  flex: 1;
+  min-width: 0;
+  font-size: 11px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.frow .fx {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--faint);
+  opacity: 0;
+  transition: opacity .13s, color .13s, background .13s;
+}
+.frow:hover .fx { opacity: 1; }
+.frow .fx:hover { color: #fff; background: rgba(224, 75, 74, .8); }
+
+/* 状态行里的「N 个文件」 */
+.fnum {
+  font-style: normal;
+  color: var(--faint);
+  cursor: pointer;
+  border-bottom: 1px dashed rgba(255, 255, 255, .18);
+}
+.fnum:hover { color: var(--text); border-bottom-color: var(--text); }
+
+/* 程序下面挂着的文件 */
+.file {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: -1px 0 1px 40px;
+  padding: 3px 7px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background .13s;
+}
+.file:hover { background: rgba(255, 255, 255, .06); }
+.fdot {
+  width: 4px;
+  height: 4px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--muted);
+  opacity: .6;
+}
+/* 快捷方式：图标式的箭头，跟普通文件区分开 */
+.file.lnk .fdot,
+.frow.lnk .fdot {
+  border-radius: 0;
+  width: 0;
+  height: 0;
+  opacity: 1;
+  border-left: 5px solid transparent;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-right: 5px solid var(--muted);
+  background: none;
+  transform: rotate(-45deg);
+  margin: 0 1px;
+}
+.file.lnk .fn { color: var(--muted); }
+.fn {
+  flex: 1;
+  min-width: 0;
+  font-size: 10.5px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.file:hover .fn { color: var(--text); }
+.fx {
+  flex: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--faint);
+  opacity: 0;
+  transition: opacity .13s, color .13s, background .13s;
+}
+.file:hover .fx { opacity: 1; }
+.fx:hover { color: #fff; background: rgba(224, 75, 74, .8); }
+
+/* 添加程序 */
+.add {
+  width: 100%;
+  height: 26px;
+  border-radius: 8px;
+  border: 1px dashed var(--line);
+  background: transparent;
+  color: var(--faint);
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.add span { font-size: 13px; line-height: 1; }
+.add:hover {
+  color: var(--text);
+  border-color: var(--muted);
+  background: rgba(255, 255, 255, .05);
+}
+.add:disabled { opacity: .5; cursor: default; }
+
+/* 程序选择面板 */
+.picker {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 34px;
+  bottom: 44px;
+  overflow-y: auto;
+  background: rgba(18, 18, 22, 0.97);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 4px;
+  z-index: 5;
+}
+.picker::-webkit-scrollbar { width: 6px; }
+.picker::-webkit-scrollbar-thumb { background: rgba(255,255,255,.16); border-radius: 3px; }
+.prog {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.prog:hover { background: rgba(255, 255, 255, .07); }
+.pn { font-size: 11.5px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pd { font-size: 9.5px; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pnone { padding: 14px 10px; font-size: 11px; color: var(--faint); text-align: center; }
+.phead {
+  position: sticky; top: 0; z-index: 2;
+  padding: 5px 8px; font-size: 10px; color: var(--muted);
+  background: rgba(18, 18, 22, 0.98);
+  border-bottom: 1px solid var(--line);
+}

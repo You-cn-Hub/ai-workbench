@@ -1,0 +1,26 @@
+# 依赖
+node_modules/
+
+# 构建产物
+dist/
+release-src/
+
+# 运行时数据（属于每个使用者，不该进仓库）
+data/
+logs/
+_pos.json
+_order.json
+settings.json
+_icon.log
+_trace.log
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# 日志
+*.log
+npm-debug.log*

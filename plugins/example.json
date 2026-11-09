@@ -1,0 +1,27 @@
+{
+  "_说明": "这是一个配置示例。复制成 你的程序名.json 改一改就能用；删掉这个文件也不影响程序运行。",
+  "id": "example",
+  "name": "示例程序",
+  "short": "例",
+  "color": "#534AB7",
+  "type": "app",
+  "enabled": true,
+  "launch": {
+    "_说明": "path 是 exe 的完整路径。程序装在带版本号的目录里（升级就换路径）就用 pathGlob，支持 * 通配。",
+    "path": "D:/Apps/Example/Example.exe",
+    "args": [],
+    "workdir": "D:\\Apps\\Example",
+    "pathGlob": null
+  },
+  "find": {
+    "_说明": "process 填进程名，去任务管理器里看「详细信息」那一列。它是用来定位窗口的，填错就找不到窗口。",
+    "process": "Example.exe"
+  },
+  "hotkey": "",
+  "note": "",
+  "embed": {
+    "_说明": "strategy: follow 表示这个程序窗口跟着悬浮条走（悬浮条藏起来它也藏）。",
+    "strategy": "follow",
+    "hideWhenInactive": true
+  }
+}

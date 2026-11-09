@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>浏览器工具条</title>
+<style>
+  :root {
+    --bg: #16161a;
+    --fg: #f0eff4;
+    --muted: #9c9ca4;
+    --faint: #7d7d87;
+    --line: rgba(255, 255, 255, 0.09);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    user-select: none;
+    font: 400 12px/1.4 system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+  }
+  .bar {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .nav {
+    width: 24px;
+    height: 24px;
+    flex: none;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--muted);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: color .13s, background .13s;
+  }
+  .nav:hover:not(:disabled) { color: var(--fg); background: rgba(255, 255, 255, .1); }
+  .nav:disabled { color: rgba(255, 255, 255, .18); cursor: default; }
+  .nav svg { display: block; }
+
+  .addr {
+    flex: 1;
+    min-width: 0;
+    height: 24px;
+    border-radius: 7px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, .05);
+    color: var(--fg);
+    font: inherit;
+    font-size: 11.5px;
+    padding: 0 9px;
+    outline: none;
+    transition: border-color .13s, background .13s;
+  }
+  .addr::placeholder { color: var(--faint); }
+  .addr:focus {
+    border-color: rgba(91, 141, 239, .75);
+    background: rgba(91, 141, 239, .1);
+  }
+
+  .tag {
+    flex: none;
+    max-width: 130px;
+    font-size: 10px;
+    color: var(--faint);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>
+</head>
+<body>
+<div class="bar">
+  <button class="nav" id="back" title="后退">
+    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+  </button>
+  <button class="nav" id="fwd" title="前进">
+    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+  </button>
+  <button class="nav" id="reload" title="刷新">
+    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></svg>
+  </button>
+  <button class="nav" id="home" title="回到工作台">
+    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7"/><path d="M6.5 9.5V20h11V9.5"/></svg>
+  </button>
+
+  <input class="addr" id="addr" spellcheck="false" placeholder="输入网址或本机地址，回车打开" />
+
+  <span class="tag" id="tag"></span>
+
+  <button class="nav" id="ext" title="用系统浏览器打开">
+    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+  </button>
+  <button class="nav" id="hide" title="收起面板">
+    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+</div>
+<script src="chrome.js"></script>
+</body>
+</html>
