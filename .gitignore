@@ -3,7 +3,6 @@ node_modules/
 
 # 构建产物
 dist/
-release-src/
 
 # 运行时数据（属于每个使用者，不该进仓库）
 data/
